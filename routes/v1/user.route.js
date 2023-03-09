@@ -1,6 +1,6 @@
 
 const express = require("express");
-const { randomUser, getByid, getSpecificTool, updateUser } = require("../../controller/tools.controller");
+const { randomUser, getByid, getSpecificTool, updateUser, randomUserAll, addData, updateRandomUser } = require("../../controller/tools.controller");
 const viewcount = require("../../middleware/viewCount");
 const router = express.Router();
 router
@@ -42,4 +42,7 @@ router
 });
 
 router.get('/random', randomUser )
+router.get('/all', randomUserAll )
+router.post('/save', addData)
+router.patch('/update/:id', updateRandomUser)
 module.exports = router;

@@ -46,9 +46,60 @@ module.exports.randomUser= (req, res, next) => {
     });
 
 }
+module.exports.randomUserAll= (req, res, next) => {
+    const {quantity} = req.query;
+    fs.readFile('data.json', function (err, data) {
+        if (err)
+            console.log(err, 'err');;
+
+        const Data = data.toString('utf8')
+        const real = JSON.parse(Data)
+        res.send(real.slice(0, quantity));
+    });
+
+}
 
 module.exports.getByid =  function getByid(q, s, n){
     const id = q.params.id;
     console.log(id, "id");
+    n();
+}
+
+module.exports.addData = function addData(q, s, n){
+    const newUser = q.body;
+    clg(newUser, '"newUser"')
+    var data = fs.readFileSync("data.json");
+    var myObject = JSON.parse(data);
+    clg(myObject, 'myobject')
+    // Defining new data to be added
+
+    // Adding the new data to our object
+    myObject.push(newUser);
+
+    // Writing to our JSON file
+    var newData2 = JSON.stringify(myObject);
+    fs.writeFile("data.json", newData2, (err) => {
+        // Error checking
+        if (err) clg(err, '"err"')
+        console.log("New data added");
+    });
+}
+
+module.exports.updateRandomUser = function updateRandomUser(q, s, n){
+    const id = q.params.id;
+    const updateData = q.body;
+    clg(id, updateData, '"id"')
+    updateData._id = id;
+    const fileName = '../data.json';
+    const file = require(fileName);
+    clg(file, 'file')
+    file.push({update:true})
+    const remainingUser =  file.filter(f=>f._id !==id);
+    remainingUser.push(updateData)
+    console.log("🚀 ~ file: tools.controller.js:97 ~ updateRandomUser ~ remainingUser:", remainingUser)
+    fs.appendFile(fileName, JSON.stringify(file, 0, 4), 'utf8', function writeJSON(err) {
+        if (err) return console.log(err);
+        // console.log(JSON.stringify(file));
+    });
     n();
 }
